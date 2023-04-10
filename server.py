@@ -9,7 +9,6 @@ import traceback
 commands = ['CDUP', 'CWD', 'EPRT', 'HELP', 'LIST', 'PASS', 'PORT', 'PWD', 'QUIT',
             'RETR', 'SIZE', 'STOR', 'SYST', 'TYPE', 'USER', 'RNFR', 'RNTO', 'CDUP', 'RMD', 'DELE', 'MKD']
 
-
 class myFTPServer:
     def __init__(self, ip, port, buffer=1024):
         self.__ip = ip
@@ -61,7 +60,6 @@ class myFTPServer:
         parts = data.split(" ")
         if not self.argCheck(parts): return
         username = parts[1]
-
         if username == "anonymous":
             self.anonymous = True
             self.conn.send(b'331 Username OK. (anonymous), send password.\r\n')
@@ -80,7 +78,7 @@ class myFTPServer:
         if self.anonymous:
             self.conn.send(b'230 Login successful.\r\n')
             self.islogin = True
-            self.isVIP = True
+            self.isVIP = False
             return
         # check user password here
         try:
@@ -95,12 +93,10 @@ class myFTPServer:
                         self.islogin = True
                         self.isVIP = True if vip == 'v' else False
                         break
-
             if self.islogin:
                 self.conn.send(b'230 Login successful.\r\n')
             else:
                 self.conn.send(b'430 Invalid username or password.\r\n')
-
         except Exception as e:
             print(e)
             self.conn.send(b'430 Invalid username or password.\r\n')
@@ -270,7 +266,6 @@ class myFTPServer:
         #  Change the current working directory .
         parts = data.split(" ")
         if not self.argCheck(parts): return
-
         pathname = parts[1]
         try:
             os.chdir(pathname)
@@ -302,7 +297,6 @@ class myFTPServer:
         if os.path.isdir(newname):
             self.conn.send(f'550 Directory {newname} already exists.\r\n'.encode())
             return
-
         try:
             os.mkdir(newname)
             self.conn.send(f'257 Directory /{newname} created.\r\n'.encode())
@@ -335,7 +329,6 @@ class myFTPServer:
         parts = data.split(' ')
         if not self.argCheck(parts): return
         newname = parts[1]
-        if not self.filecheck(newname): return
         if os.path.isfile(newname):
             self.conn.send(f'550 File {newname} already exists.\r\n'.encode())
             return
