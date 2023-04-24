@@ -6,7 +6,7 @@ Example:
     ```
 
     2. In another directory, download any file in the folder.
-    ```sh
+    ```sh™™£
     ftp -Aa 127.0.0.1:server.py
     ```
     In this example we download the script itself.
